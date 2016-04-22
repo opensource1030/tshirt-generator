@@ -4,7 +4,7 @@ Homestead.yaml
 Homestead.json
 .env
 
-uploads/templates/**
-uploads/images/**
+/public/uploads/templates/**
+/public/uploads/images/**
 /.idea
 .DS_Store

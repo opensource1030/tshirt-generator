@@ -2,8 +2,9 @@
 
 @section('content')
     <div class="container">
-        <h2>New Template</h2>
-        <form action="{{ route('template.update', $template) }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+        <h2>Edit Template</h2>
+        <a href="{{ route('template.index') }}">Back to List</a>
+        <form action="{{ route('template.update', $template) }}" method="POST" enctype="multipart/form-data" class="">
             <input name="_method" type="hidden" value="PUT" />
             @include('templates._form', ['submitButton' => 'Update'])
         </form>

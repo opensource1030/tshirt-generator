@@ -18,3 +18,9 @@ Route::get('/', 'TemplateController@index');
 
 // Backgrounds
 Route::resource('template', 'TemplateController');
+Route::post('template/{template}/change_image', ['as' => 'template.show.change_image', 'uses' => 'TemplateController@change_image']);
+Route::post('template/{template}/apply_image', ['as' => 'template.show.apply_image', 'uses' => 'TemplateController@apply_image']);
+
+Route::group(['prefix' => '/api/v1'], function () {
+    Route::post('templates/apply_image', ['as' => 'api.v1.templates.apply_image', 'uses' => 'api\v1\TemplateController@appy_image']);
+});
