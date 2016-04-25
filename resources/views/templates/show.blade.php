@@ -32,7 +32,7 @@
             @endif
         </div>
         <div style="display: inline-block; width: 700px;">
-            <img src="{{ url('/') . '/' . config('app.options.path.upload_template') . $template->image_path }}" style="width: 100%; height: auto; border: 1px solid #ccc;">
+            <img src="{{ $output }}" style="width: 100%; height: auto; border: 1px solid #ccc;">
         </div>
     </div>
 @endsection

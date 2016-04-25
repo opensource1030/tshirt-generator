@@ -8,3 +8,9 @@ Homestead.json
 /public/uploads/images/**
 /.idea
 .DS_Store
+
+tshirtwarp
+/*.png
+/*.jpg
+# displace.png
+# lighting.png

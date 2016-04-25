@@ -21,13 +21,18 @@ class TemplateController extends Controller
 
     public function index(Request $request) {
         $templates = Template::all();
+        Session::forget('output');
         return view('templates.index', ['templates' => $templates ]);
     }
 
     public function show(Request $request) {
         $template = Template::find($request->template);
         $image = Session::get('image');
-        return view('templates.show', ['template' => $template, 'image' => $image]);
+        $output = url('/') . '/' . config('app.options.path.upload_template') . $template->image_path;
+        if (Session::get('output')) {
+            $output = url('/') . '/' . config('app.options.path.upload_image') . Session::get('output');
+        }
+        return view('templates.show', ['template' => $template, 'image' => $image, 'output' => $output]);
     }
 
     public function edit(Request $request) {
@@ -55,7 +60,7 @@ class TemplateController extends Controller
         $template->options = $request->options;
         $template->save();
 
-        return view('templates.show', ['template' => $template]);
+        return redirect()->route('template.show', ['tempalte' => $request->template]);
     }
 
     public function create(Request $request) {
@@ -78,9 +83,7 @@ class TemplateController extends Controller
             'image_path'    => $filename,
         ]);
 
-        return view('templates.show', array(
-            'template' => $template
-        ));
+        return redirect()->route('template.show', ['tempalte' => $request->template]);
     }
 
     public function change_image(Request $request) {
@@ -105,20 +108,30 @@ class TemplateController extends Controller
     }
 
     public function apply_image(Request $request) {
-        $template = Template::find($request->template);
+        // $template = Template::find($request->template);
         $image = Session::get('image');
         // $path = '/Volumes/WORK/project/Carl/imagick/info';
         $path = public_path();
-        $template_path = $path . '/' . config('app.options.path.upload_template') . $template->image_path;
+        // $template_path = $path . '/' . config('app.options.path.upload_template') . $template->image_path;
+        $template_id = $request->template;
         $image_path = $path . '/' . config('app.options.path.upload_image') . $image;
-        $output_path = $path . '/' . config('app.options.path.upload_image') . 'output.jpg';
-        $apply_command = './tshirt -r "130x130+275+175" -R -3 -o 5,0 -E ' . $image_path . ' ' . $template_path . ' ' . $output_path;
-        // cd /Volumes/WORK/project/Carl/imagick/info && ./tshirt -r "130x130+275+175" -R -3 -o 5,0 -E flowers_van_gogh.jpg tshirt_gray.jpg export.jpg
-        $command = 'cd ' . $path . ' && cd .. && ' . $apply_command;
-        print_r($command);
-        $output = exec($command);
-        print_r('<br/>');
-        print_r($output);
-        // return redirect()->route('template.show', ['tempalte' => $request->template]);
+        // $output_path = $path . '/' . config('app.options.path.upload_image') . 'output.jpg';
+        // $apply_command = './tshirt -r "130x130+275+175" -R -3 -o 5,0 -E ' . $image_path . ' ' . $template_path . ' ' . $output_path;
+        // // cd /Volumes/WORK/project/Carl/imagick/info && ./tshirt -r "130x130+275+175" -R -3 -o 5,0 -E flowers_van_gogh.jpg tshirt_gray.jpg export.jpg
+        // $command = 'cd ' . $path . ' && cd .. && ' . $apply_command;
+        // $output = exec($command);
+        // print_r($output);
+
+        $originalInput = \Request::input();
+        $request = \Request::create(route('api.v1.templates.apply_image'), 'POST');
+        \Request::replace(['template_id' => $template_id, 'image_path' => $image_path]);
+        // \Request::replace($request->input());
+        $response = \Route::dispatch($request);
+        $instance = json_decode(\Route::dispatch($request)->getContent());
+        Session::put('output', $instance->data->output->filename);
+        // var_dump($instance);
+        // \Request::replace($originalInput);
+        // var_dump($originalInput);
+        return redirect()->route('template.show', ['tempalte' => $template_id]);
     }
 }

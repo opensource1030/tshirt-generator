@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api\v1;
+namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
@@ -11,8 +11,7 @@ use Log;
 // use Illuminate\Auth\Guard;
 // use App\Model\User;
 
-class ApiController extends BaseController
-{
+class ApiController extends BaseController {
 
 	public $response;
 	public $request;
